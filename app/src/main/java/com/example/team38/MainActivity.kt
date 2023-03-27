@@ -22,9 +22,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Hvem er dere")
-                    Greeting("Mohib")
-                    bye("Erik")
+                    StromprisScreen()
                 }
             }
         }
