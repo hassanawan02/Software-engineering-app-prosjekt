@@ -23,6 +23,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting("Hvem er dere")
+                    Greeting("Mohib")
+                    bye("Erik")
                 }
             }
         }
@@ -32,6 +34,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
+}
+
+@Composable
+fun bye(name: String) {
+    Text(text = "Bye $name!")
 }
 
 @Preview(showBackground = true)
