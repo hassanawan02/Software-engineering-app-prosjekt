@@ -12,12 +12,16 @@ class StromprisViewModel : ViewModel(){
     private val _uiState = MutableStateFlow(StromprisUiState(stromPris = strompriser))
     val uiState: StateFlow<StromprisUiState> = _uiState.asStateFlow()
 
-    private val dataSource = Datasource("https://www.hvakosterstrommen.no/api/v1/prices/2023/03-27_NO5.json")
+    private val baseUrl = "https://www.hvakosterstrommen.no/api/v1/prices"
+    private var dataSource = Datasource("$baseUrl/2023/03-27_NO5.json")
     init{
         viewModelScope.launch{
 
             lastInnStrompris()
         }
+    }
+    private fun setDatasource(aar: Int, maaned: Int, dag: Int, prisomraade: String) {
+        dataSource = Datasource("$baseUrl/$aar/$maaned-$dag" + "_$prisomraade.json")
     }
     private fun lastInnStrompris(){
         viewModelScope.launch{
