@@ -2,6 +2,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.team38.StromprisData
 import com.example.team38.StromprisUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class StromprisViewModel : ViewModel(){
     private val strompriser = StromprisData(0.0, 0.0, 0.0, "", "" )
-    private val _uiState = MutableStateFlow(StromprisUiState(stromPris = strompriser))
+    private val _uiState = MutableStateFlow(StromprisUiState(stromPris = listOf(strompriser)))
     val uiState: StateFlow<StromprisUiState> = _uiState.asStateFlow()
 
     private val baseUrl = "https://www.hvakosterstrommen.no/api/v1/prices"
@@ -24,7 +25,7 @@ class StromprisViewModel : ViewModel(){
         dataSource = Datasource("$baseUrl/$aar/$maaned-$dag" + "_$prisomraade.json")
     }
     private fun lastInnStrompris(){
-        viewModelScope.launch{
+        viewModelScope.launch(Dispatchers.IO){
             val stromPriser = dataSource.fetchStromprisData()
             _uiState.value = StromprisUiState(stromPris = stromPriser)
         }

@@ -5,12 +5,13 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.utils.EmptyContent.headers
-import io.ktor.serialization.gson.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.engine.okhttp.*
 
 class Datasource(val path: String){
-    private val client = HttpClient(){
+    private val client = HttpClient(OkHttp){
         install(ContentNegotiation){
-            gson()
+            json()
         }
     }
     val apiKey = "55a03d0d-b011-4477-9225-f553640c8e3f"
@@ -20,8 +21,8 @@ class Datasource(val path: String){
                 append("X-Gravitee-API-Key", apiKey)
             }
         }
-        val jsonBody: StromprisTimer = response.body()
-        return jsonBody.timer
+        val jsonBody: List<StromprisData> = response.body()
+        return jsonBody
     }
 
 }

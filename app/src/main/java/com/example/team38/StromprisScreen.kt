@@ -16,13 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 //DENNE FÅR ERROR IKKE GLEM DETTE
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StromprisScreen(stromprisViewModel: StromprisViewModel = viewModel()){
+fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()){
 
     val stromprisUiState by stromprisViewModel.uiState.collectAsState()
 
@@ -44,6 +43,9 @@ fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            Text("${stromprisData.NOK_per_kWh}")
+            Text("${stromprisData.EUR_per_kWh}")
+            Text("${stromprisData.EXR}")
             Text(stromprisData.time_start)
             Text(stromprisData.time_end)
 
@@ -53,7 +55,7 @@ fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
 }
 @Composable
 fun lagKort(stromprisUiState: StromprisUiState, viewModel: StromprisViewModel){
-    val data = stromprisUiState.stromPris
+    val data = stromprisUiState.stromPris[0];
     val liste = listOf(data)
     LazyColumn{
         items(liste){index ->

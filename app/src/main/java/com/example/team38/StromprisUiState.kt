@@ -1,5 +1,5 @@
 package com.example.team38
 
 data class StromprisUiState(
-    var stromPris: StromprisData
+    var stromPris: List<StromprisData>
 )

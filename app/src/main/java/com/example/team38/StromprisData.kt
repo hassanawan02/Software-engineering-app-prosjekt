@@ -1,7 +1,9 @@
 package com.example.team38
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class StromprisData(
     @SerializedName("NOK_per_kWh") var NOK_per_kWh: Double,
     @SerializedName("EUR_per_kWh") var EUR_per_kWh: Double,
