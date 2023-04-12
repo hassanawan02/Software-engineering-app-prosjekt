@@ -13,7 +13,12 @@ class StromprisViewModel : ViewModel(){
     private val _uiState = MutableStateFlow(StromprisUiState(stromPris = listOf(strompriser)))
     val uiState: StateFlow<StromprisUiState> = _uiState.asStateFlow()
 
+    //ENDRE URL TIL PROXY
     private val baseUrl = "https://www.hvakosterstrommen.no/api/v1/prices"
+    private var lat = 60.10
+    private var lon = 10
+    private val baseUrlForecast = "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=$lat&lon=$lon"
+    private val baseUrlFrost = "bruh"
     private var dataSource = Datasource("$baseUrl/2023/03-27_NO5.json")
     init{
         viewModelScope.launch{
