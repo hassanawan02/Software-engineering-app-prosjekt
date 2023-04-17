@@ -3,7 +3,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 
-data class Details(
+data class InstantDetails(
     val air_pressure_at_sea_level: Float,
     val air_temperature: Float,
     val cloud_area_fraction: Float,

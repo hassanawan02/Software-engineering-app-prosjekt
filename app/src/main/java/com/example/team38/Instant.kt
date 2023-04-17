@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Instant(
-    val details: Details
+    val details: InstantDetails
 )
