@@ -26,6 +26,7 @@ class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost:
         return jsonBody
     }
 
+    //egen datasource per api?
     suspend fun fetchForecastData(): List<Float> {
         val response = client.get(pathForecast) {
             headers {

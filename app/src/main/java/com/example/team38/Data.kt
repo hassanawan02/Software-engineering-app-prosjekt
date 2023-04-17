@@ -1,4 +1,8 @@
 package com.example.team38
 
-class Data {
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Data (
+    val
+)

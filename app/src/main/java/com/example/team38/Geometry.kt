@@ -1,4 +1,9 @@
 package com.example.team38
 
-class Geometry {
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Geometry (
+    val type: String,
+    val coordinates: List<Float>
+)
