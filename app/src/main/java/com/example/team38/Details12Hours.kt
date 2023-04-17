@@ -1,3 +1,7 @@
 package com.example.team38
+import kotlinx.serialization.Serializable
 
-data class Details12Hours()
+@Serializable
+data class Details12Hours(
+    val probability_of_precipitation: Float
+)
