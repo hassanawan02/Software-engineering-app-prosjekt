@@ -1,3 +1,8 @@
 package com.example.team38
 
-data class Instant()
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Instant(
+    val details: Details
+)
