@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Meta(
-    @SerializedName("updated_at") var updated_at : String,
-    @SerializedName("units") var units : Units
+    @SerializedName("updated_at") val updated_at : String,
+    @SerializedName("units") val units : Units
 )

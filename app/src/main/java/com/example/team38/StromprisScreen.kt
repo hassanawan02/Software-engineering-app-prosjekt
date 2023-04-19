@@ -35,8 +35,11 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
 @Composable
 fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
     val stromprisUiState by viewModel.uiState.collectAsState()
+    val forecastUiState by viewModel.forecastUiState.collectAsState()
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth().padding(60.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(60.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -44,10 +47,7 @@ fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
             verticalArrangement = Arrangement.Center
         ) {
             Text("${stromprisData.NOK_per_kWh}")
-            Text("${stromprisData.EUR_per_kWh}")
-            Text("${stromprisData.EXR}")
-            Text(stromprisData.time_start)
-            Text(stromprisData.time_end)
+            Text("${forecastUiState.forecast}")
 
         }
     }

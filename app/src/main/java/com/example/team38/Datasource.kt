@@ -1,4 +1,3 @@
-import com.example.team38.ForecastData
 import com.example.team38.StromprisData
 import com.example.team38.StromprisTimer
 import io.ktor.client.*
@@ -33,8 +32,12 @@ class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost:
                 append("X-Gravitee-API-Key", apiKey)
             }
         }
-        val jsonBody: List<ForecastData> = response.body()
-        return emptyList()
+        val jsonBody: ForecastData = response.body()
+        var temp: MutableList<Float> = mutableListOf()
+        for (time in jsonBody.timeseries) {
+            temp.add(time.data.instant.details.air_temperature)
+        }
+        return temp
     }
 
 }
