@@ -7,11 +7,12 @@ import io.ktor.client.request.*
 import io.ktor.client.utils.EmptyContent.headers
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.client.engine.okhttp.*
+import kotlinx.serialization.json.Json
 
 class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost: String){
     private val client = HttpClient(OkHttp){
         install(ContentNegotiation){
-            json()
+            json(Json{ignoreUnknownKeys = true})
         }
     }
     val apiKey = "55a03d0d-b011-4477-9225-f553640c8e3f"
@@ -34,8 +35,13 @@ class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost:
         }
         val jsonBody: ForecastData = response.body()
         var temp: MutableList<Float> = mutableListOf()
-        for (time in jsonBody.timeseries) {
-            temp.add(time.data.instant.details.air_temperature)
+        for (time in jsonBody.properties.timeseries) {
+            val hour = "${time.time[11]}${time.time[12]}".toInt()
+            val check = listOf(0, 6, 12, 18)
+            if (hour in check) {
+                temp.add(time.data.instant.details.air_temperature)
+            }
+
         }
         return temp
     }

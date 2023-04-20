@@ -21,7 +21,7 @@ class StromprisViewModel : ViewModel(){
     //ENDRE URL TIL PROXY
     private val baseUrl = "https://www.hvakosterstrommen.no/api/v1/prices"
     private var lat = 60.10
-    private var lon = 10
+    private var lon = 10.0
     private val baseUrlForecast = "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=$lat&lon=$lon"
     private val baseUrlFrost = "bruh"
     private var dataSource = Datasource("$baseUrl/2023/03-27_NO5.json", baseUrlForecast, baseUrlFrost)
@@ -32,7 +32,9 @@ class StromprisViewModel : ViewModel(){
             lastInnForecast()
         }
     }
-    private fun setDatasource(aar: Int, maaned: Int, dag: Int, prisomraade: String) {
+    private fun setDatasource(aar: Int, maaned: Int, dag: Int, prisomraade: String, lat: Double, lon: Double) {
+        this.lat = lat
+        this.lon = lon
         dataSource = Datasource("$baseUrl/$aar/$maaned-$dag" + "_$prisomraade.json", baseUrlForecast, baseUrlFrost)
     }
     private fun lastInnStrompris(){

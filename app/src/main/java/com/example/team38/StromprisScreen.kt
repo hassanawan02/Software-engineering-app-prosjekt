@@ -46,7 +46,7 @@ fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("${stromprisData.NOK_per_kWh}")
+            Text("${stromprisData.NOK_per_kWh} kr/kWh")
             Text("${forecastUiState.forecast}")
 
         }

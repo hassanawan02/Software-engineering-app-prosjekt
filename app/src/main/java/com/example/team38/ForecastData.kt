@@ -10,6 +10,5 @@ import kotlinx.serialization.json.Json
 data class ForecastData(
     val type: String,
     val geometry: Geometry,
-    val properties: Properties,
-    val timeseries: List<Time>
+    val properties: Properties
 )
