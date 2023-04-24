@@ -1,3 +1,4 @@
+import com.example.team38.FrostData
 import com.example.team38.StromprisData
 import com.example.team38.StromprisTimer
 import io.ktor.client.*
@@ -44,6 +45,22 @@ class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost:
 
         }
         return temp
+    }
+
+    suspend fun fetchFrostData(): List<Float> {
+        val response = client.get(pathFrost) {
+            headers {
+                append("X-Gravitee-API-Key", apiKey)
+            }
+        }
+        val jsonBody: FrostData = response.body()
+        var legacyTemps: MutableList<Float> = mutableListOf()
+        for (data in jsonBody.data) {
+            for (observation in data.observations) {
+                legacyTemps.add(observation.value)
+            }
+        }
+        return legacyTemps
     }
 
 }

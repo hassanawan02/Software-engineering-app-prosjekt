@@ -36,6 +36,7 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
 fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
     val stromprisUiState by viewModel.uiState.collectAsState()
     val forecastUiState by viewModel.forecastUiState.collectAsState()
+    val frostUiState by viewModel.frostUiState.collectAsState()
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,7 +49,7 @@ fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
         ) {
             Text("Strømpris: ${stromprisData.NOK_per_kWh} kr/kWh")
             Text("Locationforecast: ${forecastUiState.forecast}")
-
+            Text("Frost: ${frostUiState.frost}")
         }
     }
 
