@@ -16,7 +16,7 @@ class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost:
             json(Json{ignoreUnknownKeys = true})
         }
     }
-    val apiKey = "55a03d0d-b011-4477-9225-f553640c8e3f"
+    val apiKey = "0ded4cec-81e5-4113-8d4b-1ac18ab000ec"
     suspend fun fetchStromprisData(): List<StromprisData>{
         val response = client.get(pathStrom) {
             headers {
@@ -57,10 +57,13 @@ class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost:
         var legacyTemps: MutableList<Float> = mutableListOf()
         for (data in jsonBody.data) {
             for (observation in data.observations) {
-                legacyTemps.add(observation.value)
+                val hour = "${data.referenceTime[11]}${data.referenceTime[12]}".toInt()
+                val check = listOf(0, 6, 12, 18)
+                if (hour in check) {
+                    legacyTemps.add(observation.value)
+                }
             }
         }
         return legacyTemps
     }
-
 }

@@ -19,12 +19,16 @@ class StromprisViewModel : ViewModel(){
     val frostUiState: StateFlow<FrostUiState> = _frostUiState.asStateFlow()
 
     //ENDRE URL TIL PROXY
-    private val baseUrl = "https://www.hvakosterstrommen.no/api/v1/prices"
+    private val baseUrl = "https://hvakosterstrommen.no/api/v1/prices"
     private var lat = 60.10
     private var lon = 10.0
-    private val baseUrlForecast = "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=$lat&lon=$lon"
-    private val baseUrlFrost = "https://frost.met.no/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=2023-04-10%2F2023-04-24&elements=Minimum%20temperature%20(12%20hours)"
-    private var dataSource = Datasource("$baseUrl/2023/03-27_NO5.json", baseUrlForecast, baseUrlFrost)
+    private val currentYear = 2023
+    private val currentMonth = 4
+    private val currentDate = 27
+    private val baseUrlForecast = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/complete?lat=$lat&lon=$lon"
+    private val baseUrlFrost = "https://gw-uio.intark.uh-it.no/in2000/frostapi/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=$currentYear-04-${currentDate-14}%2F$currentYear-04-$currentDate&elements=air_temperature"
+
+    private var dataSource = Datasource("$baseUrl/$currentYear/03-${currentDate}_NO5.json", baseUrlForecast, baseUrlFrost)
     init{
         viewModelScope.launch{
 
