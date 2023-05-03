@@ -50,6 +50,9 @@ android {
 
 dependencies {
 
+
+    def nav_version = "2.5.3"
+    implementation ("androidx.navigation:navigation-compose:$nav_version")
     implementation("io.ktor:ktor-server-core:2.2.4")
     implementation("io.ktor:ktor-server-netty:2.2.4")
 
