@@ -1,9 +1,7 @@
 package com.example.team38
 
 import StromprisViewModel
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,20 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 
-//DENNE FÅR ERROR IKKE GLEM DETTE
 
 
 
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(), onNavigateToInstillinger: () -> (Unit), onNavigateToResultat: () -> (Unit)){
@@ -69,7 +63,7 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
         },
         content = {
             TopAppBar(
-                title = {Text(text = "Strompriser")},
+                title = {Text(text = "Strompriser", color = Color.Black)},
 
                 navigationIcon = {
                     Box(
@@ -78,7 +72,7 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
                             .padding(end = 16.dp)
                             .fillMaxSize()
                     ) {
-                        IconButton(onClick = { scope.launch { drawerState.open() } },) {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(Icons.Default.Menu, contentDescription = null)
                         }
                     }
@@ -88,11 +82,13 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
 
                 )
             Column(
-                modifier = Modifier.fillMaxSize().padding(50.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(50.dp),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ) {
-                lagKort(stromprisUiState, stromprisViewModel)
+                LagKort(stromprisUiState, stromprisViewModel)
             }
         }
     )
@@ -103,10 +99,9 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
 
 
 }
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
-    val stromprisUiState by viewModel.uiState.collectAsState()
+fun VisData(stromprisData: StromprisData, viewModel: StromprisViewModel){
     val forecastUiState by viewModel.forecastUiState.collectAsState()
     val frostUiState by viewModel.frostUiState.collectAsState()
     ElevatedCard(
@@ -115,24 +110,45 @@ fun visData(stromprisData: StromprisData, viewModel: StromprisViewModel){
             .padding(60.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().background(color = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Strømpris: ${stromprisData.NOK_per_kWh} kr/kWh", color = Color.Black)
+            Text("Strømpris i Oslo akkurat nå: ${stromprisData.NOK_per_kWh} kr/kWh", color = Color.Black)
             Text("Locationforecast: ${forecastUiState.forecast}", color = Color.Black)
+
+            if(forecastUiState.forecast.isNotEmpty()){
+                val forsteGrad = forecastUiState.forecast[0]
+                Text("Første graden: $forsteGrad", color = Color.Black)
+            }
+
             Text("Frost: ${frostUiState.frost}", color = Color.Black)
         }
     }
 
 }
+
+
+
+
+
+
 @Composable
-fun lagKort(stromprisUiState: StromprisUiState, viewModel: StromprisViewModel){
-    val data = stromprisUiState.stromPris[0];
+fun LagKort(stromprisUiState: StromprisUiState, viewModel: StromprisViewModel){
+    val data = stromprisUiState.stromPris[0]
     val liste = listOf(data)
+
     LazyColumn{
         items(liste){index ->
-            visData(stromprisData = index, viewModel = viewModel)
+
+            VisData(stromprisData = index, viewModel = viewModel)
         }
     }
+
+
 }
+
+
+

@@ -1,6 +1,8 @@
 package com.example.team38
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -62,7 +64,7 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                             .padding(end = 16.dp)
                             .fillMaxSize()
                     ) {
-                        IconButton(onClick = { scope.launch { drawerState.open() } },) {
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(Icons.Default.Menu, contentDescription = null)
                         }
                     }
@@ -71,10 +73,26 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
 
 
                 )
+
             Column(
-                modifier = Modifier.background(color = Color.White)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(50.dp)
+                    .background(color = Color(0xFFCBC3E3)),
+                Arrangement.Center,
+                Alignment.CenterHorizontally
             ){
-                Text("hei dette er instillinger", color = Color.Black)
+                val switchState = remember {mutableStateOf(false)}
+
+                Text("Neste dag", color = Color.Black)
+                Box(modifier = Modifier.border(border = BorderStroke(3.dp, Color.Black),
+                    shape = MaterialTheme.shapes.small).padding(8.dp)) {
+                    Switch(
+                        checked = switchState.value,
+                        { switchState.value = it },
+                        Modifier.padding(0.dp)
+                    )
+                }
             }
         }
     )

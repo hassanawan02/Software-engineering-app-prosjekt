@@ -44,6 +44,7 @@ class Datasource(val pathStrom: String, val pathForecast: String, val pathFrost:
             }
 
         }
+
         return temp
     }
 
