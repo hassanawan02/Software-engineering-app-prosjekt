@@ -1,6 +1,8 @@
 package com.example.team38
 
 import StromprisViewModel
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,13 +21,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 
-
-
-
-
-
-
-
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(), onNavigateToInstillinger: () -> (Unit), onNavigateToResultat: () -> (Unit)){
@@ -100,6 +96,7 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VisData(stromprisData: StromprisData, viewModel: StromprisViewModel){
     val forecastUiState by viewModel.forecastUiState.collectAsState()
@@ -135,6 +132,7 @@ fun VisData(stromprisData: StromprisData, viewModel: StromprisViewModel){
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LagKort(stromprisUiState: StromprisUiState, viewModel: StromprisViewModel){
     val data = stromprisUiState.stromPris[0]

@@ -1,3 +1,5 @@
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.team38.*
@@ -6,8 +8,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 class StromprisViewModel : ViewModel(){
     private val strompriser = StromprisData(0.0, 0.0, 0.0, "", "" )
     private val _uiState = MutableStateFlow(StromprisUiState(stromPris = listOf(strompriser)))
@@ -21,18 +25,24 @@ class StromprisViewModel : ViewModel(){
 
     //ENDRE URL TIL PROXY
     private val baseUrl = "https://hvakosterstrommen.no/api/v1/prices"
-    var lat = 59.91
-    var lon = 10.75
-    var prisomraade = "NO1"
+    private var lat = 59.91
+    private var lon = 10.75
+    private var prisomraade = "NO1"
     private var dagensDato = Calendar.getInstance()
     private var aaret = dagensDato.get(Calendar.YEAR)
     private var ekteMaaned = dagensDato.get(Calendar.MONTH) + 1
     private var ekteDag = dagensDato.get(Calendar.DAY_OF_MONTH)
-    var faktiskMaaned = ekteMaaned.toString()
-    var sjekker = if(faktiskMaaned.toInt() < 9 || faktiskMaaned.toInt() == 9){ "0${ekteMaaned}"}else{ekteMaaned.toString()}
+    //Må bruke LocalDate.now().minusWeeks(2) fordi hvis vi bare tar minus 14 dager kan dagen bli mindre enn 0
+    private var toUkerSiden = LocalDate.now().minusWeeks(2)
+    private var dagenToUkerSiden = toUkerSiden.dayOfMonth
+    private var faktiskMaaned = ekteMaaned.toString()
+    //Lenken krever at man skal ha 0 foran dagen så vi legger det til hvis dagen er mindre eller lik 9
+    private var sjekker = if(faktiskMaaned.toInt() < 9 || faktiskMaaned.toInt() == 9){ "0${ekteMaaned}"}else{ekteMaaned.toString()}
+    @RequiresApi(Build.VERSION_CODES.O)
+    private var sjekkerToUkerSiden = if(dagenToUkerSiden < 9 || dagenToUkerSiden == 9){ "0${dagenToUkerSiden}"}else{dagenToUkerSiden.toString()}
 
     private val baseUrlForecast = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/complete?lat=$lat&lon=$lon"
-    private val baseUrlFrost = "https://gw-uio.intark.uh-it.no/in2000/frostapi/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=$aaret-${ekteMaaned}-${ekteDag-14}%2F$aaret-${ekteMaaned}-$ekteDag&elements=air_temperature"
+    private val baseUrlFrost = "https://gw-uio.intark.uh-it.no/in2000/frostapi/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=$aaret-${ekteMaaned}-${sjekkerToUkerSiden}%2F$aaret-${ekteMaaned}-$ekteDag&elements=air_temperature"
 
     private var dataSource = Datasource("$baseUrl/$aaret/${sjekker}-${ekteDag}_$prisomraade.json", baseUrlForecast, baseUrlFrost)
     /*

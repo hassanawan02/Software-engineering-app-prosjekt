@@ -44,7 +44,7 @@ fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()
                 Spacer(Modifier.height(12.dp))
                 itemsWithIcons.forEach{(icon, label)->
                     NavigationDrawerItem(
-                        icon = { Icon(icon, contentDescription = null) },
+                        icon = { Icon(icon, contentDescription = "Velg skjerm") },
                         label = { Text(label) },
                         selected = icon == selectedItem.value,
                         onClick = {
