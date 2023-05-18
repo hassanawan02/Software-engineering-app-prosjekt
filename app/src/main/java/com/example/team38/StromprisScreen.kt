@@ -1,6 +1,6 @@
 package com.example.team38
 
-import StromprisViewModel
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -17,8 +17,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -96,9 +101,11 @@ fun StromprisScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(
 
 }
 
+@SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun VisData(stromprisData: StromprisData, viewModel: StromprisViewModel){
+fun VisData(viewModel: StromprisViewModel){
+    val stromprisUiStateNaa by viewModel.uiState.collectAsState()
     val forecastUiState by viewModel.forecastUiState.collectAsState()
     val frostUiState by viewModel.frostUiState.collectAsState()
     ElevatedCard(
@@ -113,15 +120,29 @@ fun VisData(stromprisData: StromprisData, viewModel: StromprisViewModel){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Strømpris i Oslo akkurat nå: ${stromprisData.NOK_per_kWh} kr/kWh", color = Color.Black)
-            Text("Locationforecast: ${forecastUiState.forecast}", color = Color.Black)
+            val ordentligTid = LocalDateTime.now().hour
 
-            if(forecastUiState.forecast.isNotEmpty()){
-                val forsteGrad = forecastUiState.forecast[0]
-                Text("Første graden: $forsteGrad", color = Color.Black)
+            val faktiskDataNaa = stromprisUiStateNaa.stromPris
+            var antallNaa = 0.0
+            val tidsListeNaa = emptyList<Double>().toMutableList()
+            for(i in faktiskDataNaa){
+                antallNaa += i.NOK_per_kWh
+                tidsListeNaa.add(i.NOK_per_kWh)
+                //Får ut strømprisen for den faktiske timen man er på dagen
+                //Bruker sp ved font for universell utforming
+                if(tidsListeNaa.indexOf(i.NOK_per_kWh) == ordentligTid){
+                    Text("Strømpris i Oslo akkurat nå ${i.NOK_per_kWh} kr/kWh\n", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
+                }
+
             }
+            val gjennomsnitt = antallNaa/24
+            //Formatterer gjennomsnittet slik at det ser mer brukervennlig ut
+            val formattert = "%.4f".format(gjennomsnitt)
+            Text("Gjennomsnitt for dagen: $formattert kr/kWh \n", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
+            Text("Locationforecast: ${forecastUiState.forecast}\n", color = Color.Black,style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
 
-            Text("Frost: ${frostUiState.frost}", color = Color.Black)
+
+            Text("Frost: ${frostUiState.frost}", color = Color.Black,  style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
         }
     }
 
@@ -139,9 +160,9 @@ fun LagKort(stromprisUiState: StromprisUiState, viewModel: StromprisViewModel){
     val liste = listOf(data)
 
     LazyColumn{
-        items(liste){index ->
+        items(liste){
 
-            VisData(stromprisData = index, viewModel = viewModel)
+            VisData(viewModel = viewModel)
         }
     }
 

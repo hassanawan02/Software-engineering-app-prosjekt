@@ -1,6 +1,5 @@
 package com.example.team38
 
-import StromprisViewModel
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
@@ -82,14 +81,19 @@ fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()
 
                 )
             Column(
-                modifier = Modifier.padding(50.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(50.dp)
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
 
 
-                Text("Temperatur fra de to forrige ukene", color = Color.Black)
+                Text("Temperatur fra igår til idag", color = Color.Black)
                 VisGraf(viewModel = stromprisViewModel)
+                Spacer(Modifier.height(50.dp))
+                Text("Strømpriser i løpet av dagen", color = Color.Black)
+                GrafStrompris(viewModel = stromprisViewModel)
             }
 
         }
@@ -153,13 +157,9 @@ fun VisGraf(viewModel: StromprisViewModel){
             val maxY = data.maxOrNull() ?: 0f
             val maxX = data.size - 1
 
-            val startDate = LocalDate.now().minusWeeks(2)
+            val startDate = LocalDate.now().minusDays(1)
             val endDate = LocalDate.now()
 
-            val dateRange = (data.indices).map { index ->
-                val date = startDate.plusDays(index.toLong())
-                date.format(DateTimeFormatter.ofPattern("MMM d"))
-            }
 
             val temperatureRange = (data.indices).map { index ->
                 val temperature = data[index]
@@ -198,6 +198,7 @@ fun VisGraf(viewModel: StromprisViewModel){
                 textPaint.textAlign = android.graphics.Paint.Align.CENTER
 
                 val stepSize = (data.size / 5).coerceAtLeast(1)
+                /*
                 for (i in data.indices step stepSize) {
                     val x = i.toFloat() * xInterval
                     val y = size.height + 24.dp.toPx()
@@ -210,12 +211,14 @@ fun VisGraf(viewModel: StromprisViewModel){
                     )
                 }
 
+                 */
+
                 textPaint.textAlign = android.graphics.Paint.Align.RIGHT
                 textPaint.typeface = android.graphics.Typeface.DEFAULT_BOLD
 
                 for (i in data.indices step stepSize) {
                     val x = -8.dp.toPx()
-                    val y = size.height - i.toFloat() * (size.height / 5f)
+                    val y = size.height - data[i] *yInterval + textPaint.textSize / 2
 
                     drawContext.canvas.nativeCanvas.drawText(
                         temperatureRange[i],
@@ -248,6 +251,128 @@ fun VisGraf(viewModel: StromprisViewModel){
                     startY,
                     textPaint
                 )
+            }
+        }
+    }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun GrafStrompris(viewModel: StromprisViewModel){
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        val stromprisUiState by viewModel.uiState.collectAsState()
+
+        //Tar tid før Strompris data laster inn så får error hvis man ikke tar if-sjekken for tom liste
+        if (stromprisUiState.stromPris.isNotEmpty()) {
+            val dataInnsamling = stromprisUiState.stromPris
+            val data = emptyList<Float>().toMutableList()
+            for (i in dataInnsamling){
+                data.add(i.NOK_per_kWh.toFloat())
+            }
+            val maxY = data.maxOrNull() ?: 0f
+            val maxX = data.size - 1
+
+
+
+            val temperatureRange = (data.indices).map { index ->
+                val temperature = data[index]
+                temperature.toString()
+            }
+
+            Canvas(
+                modifier = Modifier
+                    .height(200.dp)
+                    .width(300.dp)
+                    .border(border = BorderStroke(3.dp, Color.Black))
+            ) {
+                val xInterval = size.width / maxX
+                val yInterval = size.height / maxY
+
+                val path = Path()
+                path.moveTo(0f, size.height - data.first() * yInterval)
+
+                for (i in 1 until data.size) {
+                    val x = i.toFloat() * xInterval
+                    val y = size.height - data[i] * yInterval
+                    path.lineTo(x, y)
+                }
+
+                drawPath(
+                    path = path,
+                    color = Color.Black,
+                    style = Stroke(width = 2f)
+                )
+
+
+                val textPaint = androidx.compose.ui.graphics.Paint().asFrameworkPaint()
+                textPaint.textSize = 12.sp.toPx()
+                textPaint.color = android.graphics.Color.BLACK
+                textPaint.isAntiAlias = true
+                textPaint.typeface = android.graphics.Typeface.DEFAULT
+                textPaint.textAlign = android.graphics.Paint.Align.CENTER
+
+
+                val stepSize = (data.size / 5).coerceAtLeast(1)
+                /*
+                for (i in data.indices step stepSize) {
+                    val x = i.toFloat() * xInterval
+                    val y = size.height + 24.dp.toPx()
+
+                    drawContext.canvas.nativeCanvas.drawText(
+                        dateRange[i],
+                        x,
+                        y,
+                        textPaint
+                    )
+                }
+*/
+                textPaint.textAlign = android.graphics.Paint.Align.RIGHT
+                textPaint.typeface = android.graphics.Typeface.DEFAULT_BOLD
+
+                for (i in data.indices step stepSize) {
+                    val x = -8.dp.toPx()
+                    val y = size.height - data[i] *yInterval + textPaint.textSize / 2
+
+                    drawContext.canvas.nativeCanvas.drawText(
+                        temperatureRange[i],
+                        x,
+                        y,
+                        textPaint
+                    )
+                }
+
+                // Draw the current date at the end of the graph
+                val currentDate = "23:00"
+                val currentX = maxX.toFloat() * xInterval
+                val currentY = size.height + 24.dp.toPx()
+
+                drawContext.canvas.nativeCanvas.drawText(
+                    currentDate,
+                    currentX,
+                    currentY,
+                    textPaint
+                )
+
+
+                // Draw the date two weeks beforehand at the start of the graph
+                val startDateText = "00:00"
+                val startX = 0f
+                val startY = size.height + 24.dp.toPx()
+
+                drawContext.canvas.nativeCanvas.drawText(
+                    startDateText,
+                    startX,
+                    startY,
+                    textPaint
+                )
+
+
             }
         }
     }

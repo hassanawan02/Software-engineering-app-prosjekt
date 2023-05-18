@@ -1,3 +1,5 @@
+package com.example.team38
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -17,6 +19,7 @@ class StromprisViewModel : ViewModel(){
     private val _uiState = MutableStateFlow(StromprisUiState(stromPris = listOf(strompriser)))
     val uiState: StateFlow<StromprisUiState> = _uiState.asStateFlow()
 
+
     private val _forecastUiState = MutableStateFlow(ForecastUiState(emptyList()))
     val forecastUiState: StateFlow<ForecastUiState> = _forecastUiState.asStateFlow()
 
@@ -25,6 +28,7 @@ class StromprisViewModel : ViewModel(){
 
     //ENDRE URL TIL PROXY
     private val baseUrl = "https://hvakosterstrommen.no/api/v1/prices"
+    //Alltid satt til Oslo
     private var lat = 59.91
     private var lon = 10.75
     private var prisomraade = "NO1"
@@ -32,19 +36,24 @@ class StromprisViewModel : ViewModel(){
     private var aaret = dagensDato.get(Calendar.YEAR)
     private var ekteMaaned = dagensDato.get(Calendar.MONTH) + 1
     private var ekteDag = dagensDato.get(Calendar.DAY_OF_MONTH)
-    //Må bruke LocalDate.now().minusWeeks(2) fordi hvis vi bare tar minus 14 dager kan dagen bli mindre enn 0
-    private var toUkerSiden = LocalDate.now().minusWeeks(2)
-    private var dagenToUkerSiden = toUkerSiden.dayOfMonth
+    //Må bruke LocalDate.now().minusDays(1) fordi hvis vi bare tar minus 1 dag kan dagen bli 0
+    private var enDagSiden = LocalDate.now().minusDays(1)
+    private var dagenEnDagSiden = enDagSiden.dayOfMonth
     private var faktiskMaaned = ekteMaaned.toString()
     //Lenken krever at man skal ha 0 foran dagen så vi legger det til hvis dagen er mindre eller lik 9
     private var sjekker = if(faktiskMaaned.toInt() < 9 || faktiskMaaned.toInt() == 9){ "0${ekteMaaned}"}else{ekteMaaned.toString()}
     @RequiresApi(Build.VERSION_CODES.O)
-    private var sjekkerToUkerSiden = if(dagenToUkerSiden < 9 || dagenToUkerSiden == 9){ "0${dagenToUkerSiden}"}else{dagenToUkerSiden.toString()}
+    private var sjekkerEnDagSiden = if(dagenEnDagSiden < 9 || dagenEnDagSiden == 9){ "0${dagenEnDagSiden}"}else{dagenEnDagSiden.toString()}
 
     private val baseUrlForecast = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/complete?lat=$lat&lon=$lon"
-    private val baseUrlFrost = "https://gw-uio.intark.uh-it.no/in2000/frostapi/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=$aaret-${ekteMaaned}-${sjekkerToUkerSiden}%2F$aaret-${ekteMaaned}-$ekteDag&elements=air_temperature"
+    //Satt til MET som er i Oslo
+    private val baseUrlFrost = "https://gw-uio.intark.uh-it.no/in2000/frostapi/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=$aaret-${ekteMaaned}-${sjekkerEnDagSiden}%2F$aaret-${ekteMaaned}-$ekteDag&elements=air_temperature"
+    private var dataSource = Datasource(
+        "$baseUrl/$aaret/${sjekker}-${ekteDag}_$prisomraade.json",
+        baseUrlForecast,
+        baseUrlFrost
+    )
 
-    private var dataSource = Datasource("$baseUrl/$aaret/${sjekker}-${ekteDag}_$prisomraade.json", baseUrlForecast, baseUrlFrost)
     /*
     init{
         viewModelScope.launch{
@@ -56,14 +65,17 @@ class StromprisViewModel : ViewModel(){
         }
     }
 
-     */
+
+
     private fun setDatasource(aar: Int, maaned: Int, dag: Int, prisomraade: String, latitude: Double, longitude: Double) {
         this.lat = latitude
         this.lon = longitude
-        dataSource = Datasource("$baseUrl/$aar/$maaned-$dag" + "_$prisomraade.json", baseUrlForecast, baseUrlFrost)
+        dataSource = com.example.team38.Datasource("$baseUrl/$aar/$maaned-$dag" + "_$prisomraade.json", baseUrlForecast, baseUrlFrost)
     }
 
 
+
+     */
     init{
         viewModelScope.launch{
 
@@ -75,14 +87,6 @@ class StromprisViewModel : ViewModel(){
     private fun lastInnStrompris(){
         viewModelScope.launch(Dispatchers.IO){
             val stromPriser = dataSource.fetchStromprisData()
-            _uiState.value = StromprisUiState(stromPris = stromPriser)
-        }
-    }
-    private fun lastInnStromprisNO2(){
-        viewModelScope.launch(Dispatchers.IO){
-            val prisomraadeNO2 = "NO2"
-            val nyDatasource = Datasource("$baseUrl/$aaret/${sjekker}-${ekteDag}_$prisomraadeNO2.json", baseUrlForecast, baseUrlFrost)
-            val stromPriser = nyDatasource.fetchStromprisData()
             _uiState.value = StromprisUiState(stromPris = stromPriser)
         }
     }
