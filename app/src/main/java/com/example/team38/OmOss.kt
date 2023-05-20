@@ -1,9 +1,8 @@
 package com.example.team38
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,17 +13,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris: () -> (Unit), onNavigateToOmOss: () -> (Unit), onNavigateToHome: () -> Unit){
+fun OmOss(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Unit, onNavigateToResultat: () -> Unit, onNavigateToHome: () -> Unit){
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val icons = listOf(Icons.Default.Home, Icons.Default.LocationOn, Icons.Default.Settings, Icons.Default.Search, Icons.Default.Info)
     val items = listOf("Home", "Stømpriser", "Instillinger", "Resultat", "Om oss")
-    val selectedItem = remember { mutableStateOf(icons[2]) }
+    val selectedItem = remember { mutableStateOf(icons[4]) }
     val itemsWithIcons = icons.zip(items)
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -33,17 +34,17 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                 Spacer(Modifier.height(12.dp))
                 itemsWithIcons.forEach{(icon, label)->
                     NavigationDrawerItem(
-                        icon = { Icon(icon, contentDescription = null) },
-                        label = {Text(label)},
+                        icon = { Icon(icon, contentDescription = "Velg skjerm") },
+                        label = { Text(label) },
                         selected = icon == selectedItem.value,
                         onClick = {
                             scope.launch { drawerState.close()}
                             selectedItem.value = icon
                             when(icon) {
-                                Icons.Default.Home -> onNavigateToHome()
                                 Icons.Default.LocationOn -> onNavigateToStrompris()
+                                Icons.Default.Settings -> onNavigateToInstillinger()
+                                Icons.Default.Home -> onNavigateToHome()
                                 Icons.Default.Search -> onNavigateToResultat()
-                                Icons.Default.Info -> onNavigateToOmOss()
                                 else -> {}
                             }
                         },
@@ -54,7 +55,7 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
         },
         content = {
             TopAppBar(
-                title = {Text(text = "Resultat")},
+                title = { Text(text = "Om oss", color = Color.Black) },
 
                 navigationIcon = {
                     Box(
@@ -70,30 +71,57 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                 },
 
 
-
                 )
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(50.dp)
+                    .padding(65.dp)
                     .background(color = Color(0xFFEBEDFF)),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ){
-                val switchState = remember {mutableStateOf(false)}
-
-                Text("Neste dag", color = Color.Black)
-                Box(modifier = Modifier.border(border = BorderStroke(3.dp, Color.Black),
-                    shape = MaterialTheme.shapes.small).padding(8.dp)) {
-                    Switch(
-                        checked = switchState.value,
-                        { switchState.value = it },
-                        Modifier.padding(0.dp)
-                    )
+                LazyColumn {
+                    item {
+                        Text(
+                            "Om oss \n",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Text(
+                            "Grunnleggere\n",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
+                        Text(
+                            "Fem engasjerte studenter ved Universitetet i Oslo har utviklet en app som vil hjelpe folk å spare penger på strømregningen sin. Appen tar hensyn til værforholdene og sammenligner det med strømprisen gjennom dagen.\n",
+                            color = Color.Black
+                        )
+                        Text(
+                            "Om appen\n",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
+                        Text(
+                            "Appen viser dagens værdata og strømpris for dagen slik at brukeren kan se sammenhenger mellom disse variablene. På denne måten kan brukeren selv tenke seg hvordan strømprisene vil variere basert på værprognosene.\n",
+                            color = Color.Black
+                        )
+                        Text(
+                            "Motivasjon\n",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
+                        Text(
+                            "'Vi tror at denne appen kan hjelpe folk à ta bedre beslutninger om strømforbruket sitt og dermed spare penger på strømregningen' -Team 38",
+                            color = Color.Black
+                        )
+                    }
                 }
             }
         }
     )
-
 }

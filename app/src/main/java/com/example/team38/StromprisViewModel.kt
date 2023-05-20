@@ -26,7 +26,7 @@ class StromprisViewModel : ViewModel(){
     private val _frostUiState = MutableStateFlow(FrostUiState(emptyList()))
     val frostUiState: StateFlow<FrostUiState> = _frostUiState.asStateFlow()
 
-    //ENDRE URL TIL PROXY
+    //Fikk ikke til å gjøre URL til proxy
     private val baseUrl = "https://hvakosterstrommen.no/api/v1/prices"
     //Alltid satt til Oslo
     private var lat = 59.91
@@ -34,20 +34,24 @@ class StromprisViewModel : ViewModel(){
     private var prisomraade = "NO1"
     private var dagensDato = Calendar.getInstance()
     private var aaret = dagensDato.get(Calendar.YEAR)
-    private var ekteMaaned = dagensDato.get(Calendar.MONTH) + 1
+    private var ekteMaaned = dagensDato.get(Calendar.MONTH) + 1 //januar er 0
     private var ekteDag = dagensDato.get(Calendar.DAY_OF_MONTH)
     //Må bruke LocalDate.now().minusDays(1) fordi hvis vi bare tar minus 1 dag kan dagen bli 0
-    private var enDagSiden = LocalDate.now().minusDays(1)
-    private var dagenEnDagSiden = enDagSiden.dayOfMonth
+    private var enDagSenere = LocalDate.now().plusDays(1)
+    private var aaretEnDagSenere = enDagSenere.year
+    private var maaanedenEnDagSenere = enDagSenere.month.value //Henter value slik at vi får nummeret til måneden og ikke selve måned navnet
+    private var dagenEnDagSenere = enDagSenere.dayOfMonth
     private var faktiskMaaned = ekteMaaned.toString()
     //Lenken krever at man skal ha 0 foran dagen så vi legger det til hvis dagen er mindre eller lik 9
     private var sjekker = if(faktiskMaaned.toInt() < 9 || faktiskMaaned.toInt() == 9){ "0${ekteMaaned}"}else{ekteMaaned.toString()}
-    @RequiresApi(Build.VERSION_CODES.O)
-    private var sjekkerEnDagSiden = if(dagenEnDagSiden < 9 || dagenEnDagSiden == 9){ "0${dagenEnDagSiden}"}else{dagenEnDagSiden.toString()}
+    private var sjekkerDag = if(ekteDag < 9 || ekteDag == 9){ "0${ekteDag}"}else{ekteDag.toString()}
+    private var sjekkerEnDagSenere = if(dagenEnDagSenere < 9 || dagenEnDagSenere == 9){ "0${dagenEnDagSenere}"}else{dagenEnDagSenere.toString()}
+    private var sjekkerMaanedEnDagSenere = if(maaanedenEnDagSenere < 9 || maaanedenEnDagSenere == 9){ "0${maaanedenEnDagSenere}"}else{maaanedenEnDagSenere.toString()}
+
 
     private val baseUrlForecast = "https://gw-uio.intark.uh-it.no/in2000/weatherapi/locationforecast/2.0/complete?lat=$lat&lon=$lon"
     //Satt til MET som er i Oslo
-    private val baseUrlFrost = "https://gw-uio.intark.uh-it.no/in2000/frostapi/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=$aaret-${ekteMaaned}-${sjekkerEnDagSiden}%2F$aaret-${ekteMaaned}-$ekteDag&elements=air_temperature"
+    private val baseUrlFrost = "https://gw-uio.intark.uh-it.no/in2000/frostapi/observations/v0.jsonld?sources=SN18700%3Aall&referencetime=$aaret-${ekteMaaned}-${sjekkerDag}%2F$aaretEnDagSenere-${sjekkerMaanedEnDagSenere}-${sjekkerEnDagSenere}&elements=air_temperature"
     private var dataSource = Datasource(
         "$baseUrl/$aaret/${sjekker}-${ekteDag}_$prisomraade.json",
         baseUrlForecast,

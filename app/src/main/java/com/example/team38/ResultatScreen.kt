@@ -7,11 +7,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
@@ -29,12 +28,12 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(), onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Unit){
+fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel(), onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Unit, onNavigateToOmOss: () -> (Unit), onNavigateToHome: () -> Unit){
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val icons = listOf(Icons.Default.Home, Icons.Default.Settings, Icons.Default.Search)
-    val items = listOf("Stompriser", "Instillinger", "Resultat")
-    val selectedItem = remember { mutableStateOf(icons[2]) }
+    val icons = listOf(Icons.Default.Home, Icons.Default.LocationOn, Icons.Default.Settings, Icons.Default.Search, Icons.Default.Info)
+    val items = listOf("Home", "Stømpriser", "Instillinger", "Resultat", "Om oss")
+    val selectedItem = remember { mutableStateOf(icons[3]) }
     val itemsWithIcons = icons.zip(items)
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -50,8 +49,10 @@ fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()
                             scope.launch { drawerState.close()}
                             selectedItem.value = icon
                             when(icon) {
+                                Icons.Default.LocationOn -> onNavigateToStrompris()
                                 Icons.Default.Settings -> onNavigateToInstillinger()
-                                Icons.Default.Home -> onNavigateToStrompris()
+                                Icons.Default.Home -> onNavigateToHome()
+                                Icons.Default.Info -> onNavigateToOmOss()
                                 else -> {}
                             }
                         },
@@ -80,20 +81,31 @@ fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()
 
 
                 )
-            Column(
-                modifier = Modifier
-                    .padding(50.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
+            //Setter padding slik at det går an å klikke på sidebar
+            LazyColumn(modifier = Modifier.padding(32.dp)) {
 
+                item {
+                    Column(
+                        modifier = Modifier
+                            .padding(50.dp)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
 
-                Text("Temperatur fra igår til idag", color = Color.Black)
-                VisGraf(viewModel = stromprisViewModel)
-                Spacer(Modifier.height(50.dp))
-                Text("Strømpriser i løpet av dagen", color = Color.Black)
-                GrafStrompris(viewModel = stromprisViewModel)
+                        Text("Resultater\n", fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black)
+                        Text("Temperatur fra idag til imorgen", color = Color.Black, fontWeight = FontWeight.Bold)
+                        VisGraf(viewModel = stromprisViewModel)
+                        //Gir rom mellom grafene og dataen slik at det ser bra ut
+                        Spacer(Modifier.height(50.dp))
+                        Text("Strømpriser i løpet av dagen", color = Color.Black, fontWeight = FontWeight.Bold)
+                        GrafStrompris(viewModel = stromprisViewModel)
+                        Spacer(Modifier.height(30.dp))
+                        VisData(viewModel = stromprisViewModel)
+                    }
+                }
             }
 
         }
@@ -102,46 +114,6 @@ fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun VisGraf(viewModel: StromprisViewModel){
-    /* val frostUiState by viewModel.frostUiState.collectAsState()
-    val startDate = LocalDate.now().minusWeeks(2)
-    val endDate = LocalDate.now()
-    val dateRange = (0 until frostUiState.frost.size).map { index ->
-        val date = startDate.plusDays(index.toLong())
-        date.format(DateTimeFormatter.ofPattern("MMM d"))
-    }
-
-    val temperatureRange = (0 until frostUiState.frost.size).map { index ->
-        val temperature = frostUiState.frost[index]
-        temperature.toString()
-    }
-    if(frostUiState.frost.isNotEmpty()) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .height(200.dp)
-        ) {
-            val data = frostUiState.frost
-            val maxY = data.maxOrNull() ?: 0f
-            val maxX = data.size - 1
-
-            val path = Path()
-            path.moveTo(0f, size.height - data.first() / maxY * size.height)
-
-            for (i in 1 until data.size) {
-                val x = i.toFloat() / maxX * size.width
-                val y = size.height - data[i] / maxY * size.height
-                path.lineTo(x, y)
-            }
-
-            drawPath(
-                path = path,
-                color = Color.Blue,
-                style = Stroke(width = 2f)
-            )
-        }
-    }
-
-     */
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,8 +129,8 @@ fun VisGraf(viewModel: StromprisViewModel){
             val maxY = data.maxOrNull() ?: 0f
             val maxX = data.size - 1
 
-            val startDate = LocalDate.now().minusDays(1)
-            val endDate = LocalDate.now()
+            val startDate = LocalDate.now()
+            val endDate = LocalDate.now().plusDays(1)
 
 
             val temperatureRange = (data.indices).map { index ->
@@ -198,21 +170,6 @@ fun VisGraf(viewModel: StromprisViewModel){
                 textPaint.textAlign = android.graphics.Paint.Align.CENTER
 
                 val stepSize = (data.size / 5).coerceAtLeast(1)
-                /*
-                for (i in data.indices step stepSize) {
-                    val x = i.toFloat() * xInterval
-                    val y = size.height + 24.dp.toPx()
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        dateRange[i],
-                        x,
-                        y,
-                        textPaint
-                    )
-                }
-
-                 */
-
                 textPaint.textAlign = android.graphics.Paint.Align.RIGHT
                 textPaint.typeface = android.graphics.Typeface.DEFAULT_BOLD
 
@@ -240,7 +197,7 @@ fun VisGraf(viewModel: StromprisViewModel){
                     textPaint
                 )
 
-                // Draw the date two weeks beforehand at the start of the graph
+
                 val startDateText = startDate.format(DateTimeFormatter.ofPattern("MMM d"))
                 val startX = 0f
                 val startY = size.height + 24.dp.toPx()
@@ -277,6 +234,9 @@ fun GrafStrompris(viewModel: StromprisViewModel){
             }
             val maxY = data.maxOrNull() ?: 0f
             val maxX = data.size - 1
+
+            val timeLabels = listOf("00:00", "06:00", "09:00", "12:00", "15:00", "18:00", "23:00")
+
 
 
 
@@ -348,7 +308,7 @@ fun GrafStrompris(viewModel: StromprisViewModel){
                 }
 
                 // Draw the current date at the end of the graph
-                val currentDate = "23:00"
+                val currentDate = timeLabels.last()
                 val currentX = maxX.toFloat() * xInterval
                 val currentY = size.height + 24.dp.toPx()
 
@@ -358,10 +318,21 @@ fun GrafStrompris(viewModel: StromprisViewModel){
                     currentY,
                     textPaint
                 )
+                for (i in data.indices step stepSize) {
+                    val x = i.toFloat() * xInterval
+                    val y = size.height + 24.dp.toPx()
+
+                    drawContext.canvas.nativeCanvas.drawText(
+                        timeLabels[i / stepSize],
+                        x,
+                        y,
+                        textPaint
+                    )
+                }
 
 
                 // Draw the date two weeks beforehand at the start of the graph
-                val startDateText = "00:00"
+                val startDateText = timeLabels.first()
                 val startX = 0f
                 val startY = size.height + 24.dp.toPx()
 
