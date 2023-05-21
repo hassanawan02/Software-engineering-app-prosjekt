@@ -185,7 +185,7 @@ fun VisGraf(viewModel: StromprisViewModel){
                     )
                 }
 
-                // Draw the current date at the end of the graph
+
                 val currentDate = endDate.format(DateTimeFormatter.ofPattern("MMM d"))
                 val currentX = maxX.toFloat() * xInterval
                 val currentY = size.height + 24.dp.toPx()
@@ -278,19 +278,7 @@ fun GrafStrompris(viewModel: StromprisViewModel){
 
 
                 val stepSize = (data.size / 5).coerceAtLeast(1)
-                /*
-                for (i in data.indices step stepSize) {
-                    val x = i.toFloat() * xInterval
-                    val y = size.height + 24.dp.toPx()
 
-                    drawContext.canvas.nativeCanvas.drawText(
-                        dateRange[i],
-                        x,
-                        y,
-                        textPaint
-                    )
-                }
-*/
                 textPaint.textAlign = android.graphics.Paint.Align.RIGHT
                 textPaint.typeface = android.graphics.Typeface.DEFAULT_BOLD
 
@@ -306,7 +294,7 @@ fun GrafStrompris(viewModel: StromprisViewModel){
                     )
                 }
 
-                // Draw the current date at the end of the graph
+
                 val currentDate = timeLabels.last()
                 val currentX = maxX.toFloat() * xInterval
                 val currentY = size.height + 24.dp.toPx()
@@ -330,7 +318,7 @@ fun GrafStrompris(viewModel: StromprisViewModel){
                 }
 
 
-                // Draw the date two weeks beforehand at the start of the graph
+
                 val startDateText = timeLabels.first()
                 val startX = 0f
                 val startY = size.height + 24.dp.toPx()
