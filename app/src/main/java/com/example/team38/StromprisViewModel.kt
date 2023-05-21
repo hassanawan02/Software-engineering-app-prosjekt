@@ -58,28 +58,7 @@ class StromprisViewModel : ViewModel(){
         baseUrlFrost
     )
 
-    /*
-    init{
-        viewModelScope.launch{
 
-
-            lastInnStrompris()
-            lastInnForecast()
-            lastInnFrost()
-        }
-    }
-
-
-
-    private fun setDatasource(aar: Int, maaned: Int, dag: Int, prisomraade: String, latitude: Double, longitude: Double) {
-        this.lat = latitude
-        this.lon = longitude
-        dataSource = com.example.team38.Datasource("$baseUrl/$aar/$maaned-$dag" + "_$prisomraade.json", baseUrlForecast, baseUrlFrost)
-    }
-
-
-
-     */
     init{
         viewModelScope.launch{
 
