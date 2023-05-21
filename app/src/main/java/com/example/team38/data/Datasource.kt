@@ -1,4 +1,4 @@
-package com.example.team38
+package com.example.team38.data
 
 import io.ktor.client.*
 import io.ktor.client.call.*

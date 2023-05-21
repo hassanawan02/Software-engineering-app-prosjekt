@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.team38.screens.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

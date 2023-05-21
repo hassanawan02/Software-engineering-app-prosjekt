@@ -1,4 +1,4 @@
-package com.example.team38
+package com.example.team38.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.team38.R
+import com.example.team38.viewModel.StromprisViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 

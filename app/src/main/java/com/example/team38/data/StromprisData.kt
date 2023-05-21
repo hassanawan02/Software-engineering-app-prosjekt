@@ -1,4 +1,4 @@
-package com.example.team38
+package com.example.team38.data
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable

@@ -1,10 +1,11 @@
-package com.example.team38
+package com.example.team38.viewModel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.team38.*
+import com.example.team38.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,7 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 class StromprisViewModel : ViewModel(){
+
     private val strompriser = StromprisData(0.0, 0.0, 0.0, "", "" )
     private val _uiState = MutableStateFlow(StromprisUiState(stromPris = listOf(strompriser)))
     val uiState: StateFlow<StromprisUiState> = _uiState.asStateFlow()
@@ -25,6 +27,7 @@ class StromprisViewModel : ViewModel(){
 
     private val _frostUiState = MutableStateFlow(FrostUiState(emptyList()))
     val frostUiState: StateFlow<FrostUiState> = _frostUiState.asStateFlow()
+
 
     //Fikk ikke til å gjøre URL til proxy
     private val baseUrl = "https://hvakosterstrommen.no/api/v1/prices"

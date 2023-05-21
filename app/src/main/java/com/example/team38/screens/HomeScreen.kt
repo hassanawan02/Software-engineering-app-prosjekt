@@ -1,9 +1,10 @@
-package com.example.team38
+package com.example.team38.screens
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -14,19 +15,25 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.team38.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris: () -> (Unit), onNavigateToOmOss: () -> (Unit), onNavigateToHome: () -> Unit){
+fun HomeScreen(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Unit, onNavigateToResultat: () -> Unit, onNavigateToOmOss: () -> Unit){
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val icons = listOf(Icons.Default.Home, Icons.Default.LocationOn, Icons.Default.Settings, Icons.Default.Search, Icons.Default.Info)
     val items = listOf("Home", "Stømpriser", "Instillinger", "Resultat", "Om oss")
-    val selectedItem = remember { mutableStateOf(icons[2]) }
+    val selectedItem = remember { mutableStateOf(icons[0]) }
     val itemsWithIcons = icons.zip(items)
+    //Kilde https://commons.wikimedia.org/wiki/File:Norway_counties_blank.svg
+    val imageNorge = painterResource(R.drawable.norge)
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -34,17 +41,17 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                 Spacer(Modifier.height(12.dp))
                 itemsWithIcons.forEach{(icon, label)->
                     NavigationDrawerItem(
-                        icon = { Icon(icon, contentDescription = null) },
-                        label = {Text(label)},
+                        icon = { Icon(icon, contentDescription = "Velg skjerm") },
+                        label = { Text(label) },
                         selected = icon == selectedItem.value,
                         onClick = {
                             scope.launch { drawerState.close()}
                             selectedItem.value = icon
                             when(icon) {
-                                Icons.Default.Home -> onNavigateToHome()
-                                Icons.Default.LocationOn -> onNavigateToStrompris()
-                                Icons.Default.Search -> onNavigateToResultat()
+                                Icons.Default.Settings -> onNavigateToInstillinger()
                                 Icons.Default.Info -> onNavigateToOmOss()
+                                Icons.Default.Search -> onNavigateToResultat()
+                                Icons.Default.LocationOn -> onNavigateToStrompris()
                                 else -> {}
                             }
                         },
@@ -55,7 +62,7 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
         },
         content = {
             TopAppBar(
-                title = {Text(text = "Resultat")},
+                title = { Text(text = "Om oss", color = Color.Black) },
 
                 navigationIcon = {
                     Box(
@@ -71,9 +78,8 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                 },
 
 
-
                 )
-
+            Spacer(Modifier.height(100.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,28 +89,39 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ){
-                val switchState = remember {mutableStateOf(false)}
+                LazyColumn {
+                    item {
+                        Text(
+                            "Velkommen! \n",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Text("Strømpriser og vær - i én app! Ta smarte valg og spar penger ved å forstå sammenhengen mellom vær og strømpriser",
+                        color = Color.Black)
 
-                Text("Neste dag", color = Color.Black)
-                Box(modifier = Modifier.border(border = BorderStroke(3.dp, Color.Black),
-                    shape = MaterialTheme.shapes.small).padding(8.dp)) {
-                    Switch(
-                        checked = switchState.value,
-                        { switchState.value = it },
-                        Modifier.padding(0.dp)
+
+                    }
+                }
+                Box(modifier = Modifier.height(400.dp).fillMaxWidth()) {
+                    Image(
+                        painter = imageNorge,
+                        //Bildebeskrivelse for universell utforming
+                        contentDescription = "Bilde av Norges kart",
+                        contentScale = ContentScale.Crop
                     )
                 }
-                Box(contentAlignment = Alignment.CenterStart,
+
+                Box(contentAlignment = Alignment.BottomCenter,
                     modifier = Modifier.fillMaxHeight().fillMaxWidth()){
 
-                    Button(onClick = onNavigateToOmOss, modifier = Modifier.fillMaxWidth().align(Alignment.CenterStart)) {
+                    Button(onClick = onNavigateToStrompris, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(4.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB042FF))) {
 
-                        Text(text = ("Om oss"), color = Color.Black, fontSize = 20.sp)
+                        Text(text = ("Kom i gang!"), color = Color.White)
 
                     }
                 }
             }
         }
     )
-
 }
