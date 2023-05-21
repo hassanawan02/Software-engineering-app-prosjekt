@@ -13,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,15 +84,16 @@ fun OmOss(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Uni
             ){
                 LazyColumn {
                     item {
+                        Spacer(modifier = Modifier.padding(20.dp))
                         Text(
                             "Om oss \n",
-                            fontSize = 20.sp,
+                            fontSize = 26.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black
+                            color = Color.Black,
                         )
                         Text(
                             "Grunnleggere\n",
-                            fontSize = 16.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
@@ -101,7 +103,7 @@ fun OmOss(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Uni
                         )
                         Text(
                             "Om appen\n",
-                            fontSize = 16.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
@@ -111,7 +113,7 @@ fun OmOss(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Uni
                         )
                         Text(
                             "Motivasjon\n",
-                            fontSize = 16.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
