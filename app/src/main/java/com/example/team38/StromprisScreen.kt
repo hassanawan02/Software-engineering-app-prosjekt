@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,7 +95,8 @@ fun StromprisScreen(stromPrisViewModel: StromprisViewModel = StromprisViewModel(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(50.dp),
+                    .padding(50.dp)
+                    .padding(top = 50.dp),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
             ) {
@@ -113,7 +115,7 @@ fun StromprisScreen(stromPrisViewModel: StromprisViewModel = StromprisViewModel(
                                 verticalArrangement = Arrangement.Center
                             )
                             {
-                                Text("Oslo \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                                Text("Oslo \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold, modifier =  Modifier.align(Alignment.Start))
                                 Box(modifier = Modifier.height(125.dp)) {
                                     Image(
                                         painter = imageOslo,
@@ -153,7 +155,7 @@ fun StromprisScreen(stromPrisViewModel: StromprisViewModel = StromprisViewModel(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center)
                             {
-                                Text("Bergen \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                                Text("Bergen \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold, modifier =  Modifier.align(Alignment.Start))
                                 Box(modifier = Modifier.height(125.dp)) {
                                     Image(
                                         painter = imageBergen,
@@ -183,7 +185,7 @@ fun StromprisScreen(stromPrisViewModel: StromprisViewModel = StromprisViewModel(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center)
                             {
-                                Text("Stavanger \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                                Text("Stavanger \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold, modifier =  Modifier.align(Alignment.Start))
                                 Box(modifier = Modifier.height(125.dp)) {
                                     Image(
                                         painter = imageStavanger,
@@ -213,7 +215,7 @@ fun StromprisScreen(stromPrisViewModel: StromprisViewModel = StromprisViewModel(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center)
                             {
-                                Text("Trondheim \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                                Text("Trondheim \n", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold, modifier =  Modifier.align(Alignment.Start))
                                 Box(modifier = Modifier.height(125.dp)) {
                                     Image(
                                         painter = imageTrondheim,
@@ -249,50 +251,56 @@ fun StromprisScreen(stromPrisViewModel: StromprisViewModel = StromprisViewModel(
 @Composable
 fun VisData(viewModel: StromprisViewModel){
     val stromprisUiStateNaa by viewModel.uiState.collectAsState()
-    ElevatedCard(
+
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .background(color = Color(0xFFEBEDFF))
+            .padding(top = 50.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color.White),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            val ordentligTid = LocalDateTime.now().hour
+        Text("Mer info: ", fontSize = 20.sp, fontWeight = FontWeight.Light, modifier = Modifier.align(Alignment.Start), color = Color.Black)
+        Spacer(modifier = Modifier.height(2.dp).align(Alignment.Start).width(100.dp).background(color = Color.Black))
+        val ordentligTid = LocalDateTime.now().hour
 
-            val faktiskDataNaa = stromprisUiStateNaa.stromPris
-            var antallNaa = 0.0
-            val tidsListeNaa = emptyList<Double>().toMutableList()
-            for(i in faktiskDataNaa){
-                antallNaa += i.NOK_per_kWh
-                tidsListeNaa.add(i.NOK_per_kWh)
-                //Får ut strømprisen for den faktiske timen man er på dagen
-                //Bruker sp ved font for universell utforming
-                if(tidsListeNaa.indexOf(i.NOK_per_kWh) == ordentligTid){
-                    Text("Strømpris i Oslo akkurat nå ${i.NOK_per_kWh} kr/kWh\n", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
-                    //Hvis prisen er lavere enn 0.85 så er prisen lav, og da vil det være grønn og kort spacer, ellers rødt
-                    if(i.NOK_per_kWh >= 0.85){
-                        Spacer(modifier = Modifier
-                            .height(10.dp)
-                            .background(color = Color.Red)
-                            .width(100.dp))
-                    }else{
-                        Spacer(modifier= Modifier
-                            .height(10.dp)
-                            .background(color = Color.Green)
-                            .width(50.dp))
-                    }
+        val faktiskDataNaa = stromprisUiStateNaa.stromPris
+        var antallNaa = 0.0
+        val tidsListeNaa = emptyList<Double>().toMutableList()
+        for(i in faktiskDataNaa){
+            antallNaa += i.NOK_per_kWh
+            tidsListeNaa.add(i.NOK_per_kWh)
+            //Får ut strømprisen for den faktiske timen man er på dagen
+            //Bruker sp ved font for universell utforming
+            if(tidsListeNaa.indexOf(i.NOK_per_kWh) == ordentligTid){
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = "Spotpris:              ${i.NOK_per_kWh} kr/kWh\n", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
+                val indeks = tidsListeNaa.indexOf(i.NOK_per_kWh)
+                //Hvis prisen er lavere enn 0.85 så er prisen lav, og da vil det være grønn og kort spacer, ellers rødt
+                if(i.NOK_per_kWh >= 0.85){
+                    Spacer(modifier = Modifier
+                        .height(10.dp)
+                        .background(color = Color.Red)
+                        .width(100.dp))
+                    Text("Prisnivå høy", color = Color.Black, fontStyle = FontStyle.Italic)
+                }else{
+                    Spacer(modifier= Modifier
+                        .height(10.dp)
+                        .background(color = Color.Green)
+                        .width(50.dp))
+                    Text("Prisnivå lav", color = Color.Black, fontStyle = FontStyle.Italic)
                 }
+                Text("Sist oppdatert: $indeks:00", color = Color.Black, modifier = Modifier.padding(20.dp))
+
 
             }
-            val gjennomsnitt = antallNaa/24
-            //Formatterer gjennomsnittet slik at det ser mer brukervennlig ut
-            val formattert = "%.4f".format(gjennomsnitt)
-            Text("Gjennomsnitt for dagen: $formattert kr/kWh \n", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
+
         }
+        val gjennomsnitt = antallNaa/24
+        //Formatterer gjennomsnittet slik at det ser mer brukervennlig ut
+        val formattert = "%.4f".format(gjennomsnitt)
+        Text("Gjennomsnitt for dagen: $formattert kr/kWh \n", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
     }
 
 

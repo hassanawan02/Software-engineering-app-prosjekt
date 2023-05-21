@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,6 +78,7 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(50.dp)
+                    .padding(top = 50.dp)
                     .background(color = Color(0xFFEBEDFF)),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
@@ -91,6 +93,15 @@ fun InstillingerScreen(onNavigateToResultat: () -> (Unit), onNavigateToStrompris
                         { switchState.value = it },
                         Modifier.padding(0.dp)
                     )
+                }
+                Box(contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier.fillMaxHeight().fillMaxWidth()){
+
+                    Button(onClick = onNavigateToOmOss, modifier = Modifier.fillMaxWidth().align(Alignment.CenterStart)) {
+
+                        Text(text = ("Om oss"), color = Color.Black, fontSize = 20.sp)
+
+                    }
                 }
             }
         }

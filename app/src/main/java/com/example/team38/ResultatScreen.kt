@@ -2,10 +2,7 @@ package com.example.team38
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -82,7 +79,7 @@ fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()
 
                 )
             //Setter padding slik at det går an å klikke på sidebar
-            LazyColumn(modifier = Modifier.padding(32.dp)) {
+            LazyColumn(modifier = Modifier.padding(top = 50.dp)) {
 
                 item {
                     Column(
@@ -93,14 +90,17 @@ fun ResultatScreen(stromprisViewModel: StromprisViewModel = StromprisViewModel()
                         verticalArrangement = Arrangement.Center
                     ) {
 
-                        Text("Resultater\n", fontSize = 20.sp,
+                        val currentDato = LocalDate.now().dayOfMonth
+                        val currentMaaned = LocalDate.now().month
+
+                        Text("$currentDato $currentMaaned\nResultater\n", fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black)
-                        Text("Temperatur fra idag til imorgen", color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Temperatur fra idag til imorgen", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 25.dp))
                         VisGraf(viewModel = stromprisViewModel)
                         //Gir rom mellom grafene og dataen slik at det ser bra ut
                         Spacer(Modifier.height(50.dp))
-                        Text("Strømpriser i løpet av dagen", color = Color.Black, fontWeight = FontWeight.Bold)
+                        Text("Strømpriser i løpet av dagen", color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 25.dp))
                         GrafStrompris(viewModel = stromprisViewModel)
                         Spacer(Modifier.height(30.dp))
                         VisData(viewModel = stromprisViewModel)
@@ -117,7 +117,7 @@ fun VisGraf(viewModel: StromprisViewModel){
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.White),
+            ,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -142,7 +142,7 @@ fun VisGraf(viewModel: StromprisViewModel){
                 modifier = Modifier
                     .height(200.dp)
                     .width(300.dp)
-                    .border(border = BorderStroke(3.dp, Color.Black))
+
             ) {
                 val xInterval = size.width / maxX
                 val yInterval = size.height / maxY
@@ -159,7 +159,7 @@ fun VisGraf(viewModel: StromprisViewModel){
                 drawPath(
                     path = path,
                     color = Color.Black,
-                    style = Stroke(width = 2f)
+                    style = Stroke(width = 5f)
                 )
 
                 val textPaint = androidx.compose.ui.graphics.Paint().asFrameworkPaint()
@@ -218,8 +218,7 @@ fun GrafStrompris(viewModel: StromprisViewModel){
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Color.White),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -249,7 +248,7 @@ fun GrafStrompris(viewModel: StromprisViewModel){
                 modifier = Modifier
                     .height(200.dp)
                     .width(300.dp)
-                    .border(border = BorderStroke(3.dp, Color.Black))
+
             ) {
                 val xInterval = size.width / maxX
                 val yInterval = size.height / maxY
@@ -266,7 +265,7 @@ fun GrafStrompris(viewModel: StromprisViewModel){
                 drawPath(
                     path = path,
                     color = Color.Black,
-                    style = Stroke(width = 2f)
+                    style = Stroke(width = 5f)
                 )
 
 

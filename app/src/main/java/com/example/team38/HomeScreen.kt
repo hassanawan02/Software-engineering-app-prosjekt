@@ -78,11 +78,12 @@ fun HomeScreen(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -
 
 
                 )
-
+            Spacer(Modifier.height(100.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(65.dp)
+                    .padding(50.dp)
+                    .padding(top = 50.dp)
                     .background(color = Color(0xFFEBEDFF)),
                 Arrangement.Center,
                 Alignment.CenterHorizontally
@@ -95,9 +96,6 @@ fun HomeScreen(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
                         )
-                        Text("Hvilken by er du interessert i?\n",
-                        fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
-                        color = Color.Black)
                         Text("Strømpriser og vær - i én app! Ta smarte valg og spar penger ved å forstå sammenhengen mellom vær og strømpriser",
                         color = Color.Black)
 
