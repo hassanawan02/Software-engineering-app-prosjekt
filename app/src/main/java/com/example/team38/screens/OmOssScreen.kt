@@ -106,10 +106,7 @@ fun OmOss(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Uni
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
-                        Text(
-                            "Appen viser dagens værdata og strømpris for dagen slik at brukeren kan se sammenhenger mellom disse variablene. På denne måten kan brukeren selv tenke seg hvordan strømprisene vil variere basert på værprognosene.\n",
-                            color = Color.Black
-                        )
+                        SkrivTekst()
                         Text(
                             "Motivasjon\n",
                             fontSize = 20.sp,
@@ -124,5 +121,12 @@ fun OmOss(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Uni
                 }
             }
         }
+    )
+}
+@Composable
+fun SkrivTekst(){
+    Text(
+        "Appen viser dagens værdata og strømpris for dagen slik at brukeren kan se sammenhenger mellom disse variablene. På denne måten kan brukeren selv tenke seg hvordan strømprisene vil variere basert på værprognosene.\n",
+        color = Color.Black
     )
 }
