@@ -89,4 +89,6 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     //noinspection GradleDependency
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    implementation("androidx.tracing:tracing:1.1.0")
 }
