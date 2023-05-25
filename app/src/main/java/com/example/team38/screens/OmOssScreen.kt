@@ -65,7 +65,7 @@ fun OmOss(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -> Uni
                             .fillMaxSize()
                     ) {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = null)
+                            Icon(Icons.Default.Menu, contentDescription = "Side bar")
                         }
                     }
                 },

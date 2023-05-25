@@ -55,7 +55,7 @@ fun StromprisScreen(stromPrisViewModel: StromprisViewModel = StromprisViewModel(
                 Spacer(Modifier.height(12.dp))
                 itemsWithIcons.forEach{(icon, label)->
                     NavigationDrawerItem(
-                        icon = {Icon(icon, contentDescription = "hamburger meny")},
+                        icon = {Icon(icon, contentDescription = "Velg skjerm")},
                         label = {Text(label)},
                         selected = icon == selectedItem.value,
                         onClick = {
@@ -303,6 +303,8 @@ fun VisData(viewModel: StromprisViewModel){
         //Formatterer gjennomsnittet slik at det ser mer brukervennlig ut
         val formattert = "%.4f".format(gjennomsnitt)
         Text("Gjennomsnitt for dagen: $formattert kr/kWh \n", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
+        Text("Levert av ", color = Color.Black, style = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp))
+        Text("VÆRVOLT.", color = Color.Magenta)
     }
 
 

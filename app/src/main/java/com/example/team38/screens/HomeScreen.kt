@@ -92,7 +92,7 @@ fun HomeScreen(onNavigateToInstillinger: () -> Unit, onNavigateToStrompris: () -
                 LazyColumn {
                     item {
                         Text(
-                            "Velkommen! \n",
+                            "Velkommen til VÆRVOLT! \n",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
