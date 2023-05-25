@@ -26,7 +26,7 @@ class AppTest {
                 MyAppNavHost(navController = navController)
             }
         }
-        composeTestRule.onNodeWithText("Velkommen! \n").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Velkommen til VÆRVOLT! \n").assertIsDisplayed()
     }
     @Test
     fun appNavHost_verifyText(){
